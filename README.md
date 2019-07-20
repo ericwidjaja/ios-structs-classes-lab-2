@@ -7,16 +7,24 @@ Using the Room struct below, write code that demonstrates that it is a value typ
 
 ```swift
 struct Room {
-     let maxOccupancy: Int
-     let length: Double
-     let width: Double
+    var maxOccupancy: Int
+    let length: Double
+    let width: Double
 }
 
-var regularRoom = (maxOccupancy: 2, length: 15.0, width: 10.0)
-var suiteRoom = (maxOccupancy: 5, length: 30.0, width: 20.0)
+let room1 = Room(maxOccupancy: 2, length: 5.5, width: 10.5)
+var room2 = room1
+room2.maxOccupancy = 3
 
-print("Regular Room: \(regularRoom)")
-print("Suite Room: \(suiteRoom)")
+print(room1)
+//prints Room(maxOccupancy: 2, length: 5.5, width: 10.5)
+
+print(room2)
+//Room(maxOccupancy: 3, length: 5.5, width: 10.5)
+
+//initial value of room2 is same as room1.  
+//Changes made to properties of room2 do not overide properties of room1.
+    
 ```
 ## Question 2
 
@@ -24,18 +32,21 @@ Using the Bike class below, write code that demonstrates that it is a reference 
 
 ```swift
 class Bike {
-var wheelNumber = 2
-var hasBell = false
+    var wheelNumber = 2
+    var hasBell = false
 }
+
 let bicycle = Bike()
 bicycle.hasBell
 bicycle.wheelNumber = 3
+
 print(bicycle.wheelNumber) // original value was 2 then changed to 3
 
 let bike2 = bicycle
 bike2.hasBell = true
 bike2.wheelNumber = bicycle.wheelNumber
-print(bike2.wheelNumber) //
+
+print(bike2.wheelNumber) //print 3
 print(bike2.hasBell) //double checking, it changed the reference value to 'true'
 ```
 
@@ -79,37 +90,39 @@ b. Override the printDescription method to have the instance of the Bird object 
 ```swift
 
 class Animal {
-var name: String = ""
+    var name: String = ""
 
-init(name: String) {
-self.name = name
+    init(name: String) {
+        self.name = name
+    }
+
+    func printDescription() {
+    print("I am an animal named \(name)")
+    }
 }
 
-func printDescription() {
-
-print("I am an animal named \(name)")
-
-}
-}
 class Bird: Animal {
-var canFly = true
+    var canFly = true
 
-init(name: String, canFly: Bool) {
-self.canFly = canFly
-super.init(name: name)
+    init(name: String, canFly: Bool) {
+    self.canFly = canFly
+    super.init(name: name)
+    }
+
+    func flyPrint() -> String {
+        if self.canFly == true {
+            return "I can fly"
+        } else {
+            return "I cannot fly"
+    }
 }
-func flyPrint() -> String {
-if self.canFly == true {
-return "I can fly"
-} else {
-return "I cannot fly"
+
+    override func printDescription() {
+        print("I'm \(name) and \(String(describing: flyPrint()))")
+    }
 }
-}
-override func printDescription() {
-print("I'm \(name) and \(String(describing: flyPrint()))")
-}
-}
-var newBird = Bird(name:"kiki", canFly: true)
+
+var newBird = Bird(name: "kiki", canFly: true)
 newBird.name
 newBird.canFly
 newBird.printDescription()
@@ -190,14 +203,83 @@ class Shape {
 ```
 
 a. Given the `Shape` object above, create a subclass `Square` with a property `sideLength` with a default value of 5.
+```swift
+class Square: Shape {
+    var sideLength = 5.0
+}
 
+```
 b. Override the `area` and `perimeter` computed values so the return the area/perimeter of the square as appropriate
 
 c. Override the `name` property of `Square` so that it returns a String containing its name ("Square") and its area and perimeter
+```swift
+//answer for 5.b. and 5.c.
+
+class Shape {
+    var name: String { return "This is a generic shape" }
+    var area: Double { fatalError("Subclasses must override the area") }
+    var perimeter: Double { fatalError("Subclasses must override the perimeter") }
+}
+class Square : Shape {
+    var sideLength = 5
+
+    override var name: String {
+        get {
+            return "Square shape"
+        }
+    }
+    override var area: Double {
+        get {
+            return Double(sideLength * sideLength)
+        }
+    }
+    override var perimeter: Double {
+        get {
+            return Double(4 * sideLength)
+        }
+    }
+}
+
+var otherSquare = Square()
+
+print(otherSquare.name, "with area of: \(otherSquare.area), and perimeter of: \(otherSquare.perimeter)")
+    //print--> 'Square shape with area of: 25.0, and perimeter of: 20.0'
+
+```
 
 d. Create a class `Rectangle` that subclasses from `Shape`.  Give it a `width` property with a default value of 6 and a `height` property with a default value of 4
 
 e. Override the `name` property of `Rectangle` so that it returns a String containing its name ("Rectangle") and its area and perimeter.
+```swift
+//answer for 5.d. and 5.e.
+
+class Rectangle: Shape {
+    var width = 6
+    var height = 4
+
+    override var name: String {
+        get {
+            return "Rectangle shape"
+        }
+    }
+    override var area: Double {
+        get {
+            return Double(width * height)
+        }
+    }
+    override var perimeter: Double {
+        get {
+            return Double((width * 2) + (height * 2))
+        }
+    }
+}
+
+var otherRectangle = Rectangle()
+
+print(otherRectangle.name, "with area of: \(otherRectangle.area), and perimeter of: \(otherRectangle.perimeter)")
+    //print -->'Rectangle shape with area of: 24.0, and perimeter of: 20.0'
+
+```
 
 f. (BONUS) What happens when you run the code below?  Explain why.
 
@@ -210,18 +292,16 @@ myShapes.append(Rectangle())
 for shape in myShapes {
     print("This is a \(shape.name) with an area of \(shape.area) and a perimeter of \(shape.perimeter)")
 }
+
+//print --> 'This is a Square shape with an area of 25.0 and a perimeter of 20.0'
+//print --> 'This is a Rectangle shape with an area of 24.0 and a perimeter of 20.0'
+
+//because the value in "myShapes" variable were 'appended' with most recent values, when they were called by "print"
+
 ```
-```swift
-class Shape {
-    var name: String { return "This is a generic shape" }
-    var area: Double { fatalError("Subclasses must override the area") }
-    var perimeter: Double { fatalError("Subclasses must override the perimeter") }
-
-}
-
 class Square: Shape {
 var sideLength = 5.0
-
+}
     init(name: String, area: Double, perimeter: Double, sideLength: Double) {
         self.sideLength = sideLength
     }
