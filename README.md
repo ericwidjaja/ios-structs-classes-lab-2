@@ -11,17 +11,32 @@ struct Room {
      let length: Double
      let width: Double
 }
-```
 
+var regularRoom = (maxOccupancy: 2, length: 15.0, width: 10.0)
+var suiteRoom = (maxOccupancy: 5, length: 30.0, width: 20.0)
+
+print("Regular Room: \(regularRoom)")
+print("Suite Room: \(suiteRoom)")
+```
 ## Question 2
 
 Using the Bike class below, write code that demonstrates that it is a reference type.
 
 ```swift
 class Bike {
-    var wheelNumber = 2
-    var hasBell = false
+var wheelNumber = 2
+var hasBell = false
 }
+let bicycle = Bike()
+bicycle.hasBell
+bicycle.wheelNumber = 3
+print(bicycle.wheelNumber) // original value was 2 then changed to 3
+
+let bike2 = bicycle
+bike2.hasBell = true
+bike2.wheelNumber = bicycle.wheelNumber
+print(bike2.wheelNumber) //
+print(bike2.hasBell) //double checking, it changed the reference value to 'true'
 ```
 
 ## Question 3
@@ -31,14 +46,74 @@ a. Given the Animal class below, create a Bird subclass with a new `canFly` prop
 ```swift
 class Animal {
     var name: String = ""
-    var printDescription() {
+
+    init(name: String) {
+        self.name = name
+    }
+
+    func printDescription() {
+
         print("I am an animal named \(name)")
+
     }
 }
+
+class Bird: Animal {
+    var canFly = true
+
+    init(name: String, canFly: Bool) {
+        self.canFly = canFly
+        super.init(name: name)
+    }
+}
+
+var newBird = Bird(name:"kiki", canFly: true)
+newBird.name
+newBird.canFly
+newBird.printDescription()
 ```
 
 b. Override the printDescription method to have the instance of the Bird object print out its name and whether it can fly
 
+
+```swift
+
+class Animal {
+var name: String = ""
+
+init(name: String) {
+self.name = name
+}
+
+func printDescription() {
+
+print("I am an animal named \(name)")
+
+}
+}
+class Bird: Animal {
+var canFly = true
+
+init(name: String, canFly: Bool) {
+self.canFly = canFly
+super.init(name: name)
+}
+func flyPrint() -> String {
+if self.canFly == true {
+return "I can fly"
+} else {
+return "I cannot fly"
+}
+}
+override func printDescription() {
+print("I'm \(name) and \(String(describing: flyPrint()))")
+}
+}
+var newBird = Bird(name:"kiki", canFly: true)
+newBird.name
+newBird.canFly
+newBird.printDescription()
+```
 
 ## Question 4
 
@@ -54,12 +129,55 @@ class Bike {
   }
 }
 ```
-
-
 a. Create a `LoudBike` subclass of Bike.  When you call `ringBell` it should ring the bell in all caps.
 
 b. Give `LoudBike` a new method called `ringBell(times:)` that rings the bell a given number of times
+```swift
 
+class Bike {
+    let wheelNumber = 2
+    let wheelWidth = 1.3
+    var hasBell = true
+
+    func ringBell() {
+        if hasBell {
+        print("Ring!")
+        }
+    }
+}
+
+class LoudBike: Bike {
+    var model: String = ""
+
+    init(model: String, wheelNumber: Int, wheelWidth: Double, hasBell: Bool) {
+        self.model = model
+    }
+
+    override func ringBell() {
+        if hasBell {
+            print("RING!")
+        }
+    }
+
+    func bellsound(times: Int) {
+        for _ in 0...times where hasBell == true {
+            ringBell()
+            }
+    }
+}
+
+
+var bike = LoudBike(model: "Mountain Bike", wheelNumber: 2, wheelWidth: 1.3, hasBell: true)
+
+bike.model
+bike.ringBell()
+bike.wheelNumber
+bike.wheelWidth
+bike.hasBell
+bike.bellsound(times: 5)
+
+
+```
 
 ## Question 5
 
@@ -93,6 +211,33 @@ for shape in myShapes {
     print("This is a \(shape.name) with an area of \(shape.area) and a perimeter of \(shape.perimeter)")
 }
 ```
+```swift
+class Shape {
+    var name: String { return "This is a generic shape" }
+    var area: Double { fatalError("Subclasses must override the area") }
+    var perimeter: Double { fatalError("Subclasses must override the perimeter") }
+
+}
+
+class Square: Shape {
+var sideLength = 5.0
+
+    init(name: String, area: Double, perimeter: Double, sideLength: Double) {
+        self.sideLength = sideLength
+    }
+
+    override var area: Double {
+        get {
+        return sideLength * sideLength
+        }
+    }
+}
+
+var square1 = Square(name: "square", area: 25.0, perimeter: 20.0, sideLength: 5.0)
+
+print(square1.area)
+```
+
 
 ## Question 6
 
